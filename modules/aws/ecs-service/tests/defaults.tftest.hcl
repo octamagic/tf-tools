@@ -105,3 +105,25 @@ run "rejects_target_group_without_container" {
   }
   expect_failures = [aws_ecs_service.this]
 }
+
+run "latest_revision_tracking_is_opt_in" {
+  command = plan
+
+  assert {
+    condition     = length(data.aws_ecs_task_definition.latest) == 0
+    error_message = "Without track_latest_task_definition the service must pin Terraform's own task definition and not read the live family."
+  }
+}
+
+run "latest_revision_tracking_reads_the_live_family" {
+  command = plan
+
+  variables {
+    track_latest_task_definition = true
+  }
+
+  assert {
+    condition     = length(data.aws_ecs_task_definition.latest) == 1
+    error_message = "track_latest_task_definition must read the family's newest ACTIVE revision so pipeline-registered revisions survive the next apply."
+  }
+}

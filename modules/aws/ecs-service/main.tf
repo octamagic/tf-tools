@@ -1,5 +1,25 @@
 locals {
   family = var.family != null ? var.family : var.name
+
+  # With tracking on, follow the newest ACTIVE revision so that revisions
+  # registered outside Terraform (a deploy pipeline swapping the image) are not
+  # rolled back on the next apply. max() keeps Terraform's own revision when it
+  # is the newer one, so config changes still deploy.
+  task_definition = (
+    var.track_latest_task_definition
+    ? "${aws_ecs_task_definition.this.family}:${max(aws_ecs_task_definition.this.revision, data.aws_ecs_task_definition.latest[0].revision)}"
+    : aws_ecs_task_definition.this.arn
+  )
+}
+
+data "aws_ecs_task_definition" "latest" {
+  count = var.track_latest_task_definition ? 1 : 0
+
+  task_definition = aws_ecs_task_definition.this.family
+
+  # Defer the read until the family exists; without this the first plan looks
+  # the family up before anything has been registered and fails.
+  depends_on = [aws_ecs_task_definition.this]
 }
 
 resource "aws_ecs_task_definition" "this" {
@@ -23,7 +43,7 @@ resource "aws_ecs_task_definition" "this" {
 resource "aws_ecs_service" "this" {
   name            = var.name
   cluster         = var.cluster_arn
-  task_definition = aws_ecs_task_definition.this.arn
+  task_definition = local.task_definition
   desired_count   = var.desired_count
   launch_type     = var.launch_type
 

@@ -78,6 +78,7 @@ terraform plan
 |--------|----------|--------|-------------|
 | [`aws/alb`](modules/aws/alb) | AWS | stable | Application load balancer with target group, listeners, TLS redirect and security group |
 | [`aws/alb-alarms`](modules/aws/alb-alarms) | AWS | stable | CloudWatch alarms for a service behind an ALB — 5xx rate, latency percentile, unhealthy hosts |
+| [`aws/dynamodb-table`](modules/aws/dynamodb-table) | AWS | stable | DynamoDB table with on-demand billing, PITR, SSE and deletion protection by default |
 | [`aws/ecr`](modules/aws/ecr) | AWS | stable | ECR repository with scanning, encryption, lifecycle + repo policy |
 | [`aws/ecs-autoscaling`](modules/aws/ecs-autoscaling) | AWS | stable | ECS service autoscaling with CPU, memory and request-count target tracking |
 | [`aws/ecs-cluster`](modules/aws/ecs-cluster) | AWS | stable | ECS cluster with Container Insights and Fargate capacity providers |
