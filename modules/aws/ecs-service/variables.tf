@@ -144,3 +144,9 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "track_latest_task_definition" {
+  description = "Run whichever ACTIVE revision of the task family is newest, whether Terraform or a deploy pipeline registered it. Lets CI roll a new image by registering a revision without the next apply reverting it; Terraform still wins whenever it registers a newer revision itself."
+  type        = bool
+  default     = false
+}
