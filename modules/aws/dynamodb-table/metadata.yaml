@@ -1,0 +1,3 @@
+provider: AWS
+status: stable
+summary: DynamoDB table with on-demand billing, PITR, SSE and deletion protection by default
